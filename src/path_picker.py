@@ -255,6 +255,8 @@ def decode_escape_sequence(sequence: str) -> str:
 def decode_key(char: str) -> str:
     if char in {"\r", "\n"}:
         return "enter"
+    if char == "\x1b":
+        return "escape"
     if char == "\x03":
         return "ctrl-c"
     if char in {"j", "k", "q"}:

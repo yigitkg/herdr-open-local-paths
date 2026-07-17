@@ -179,6 +179,20 @@ class LocalPathActionsTests(unittest.TestCase):
         self.assertIn("src/main.rs:8", candidates)
         self.assertIn("file:///C:/Users/me/Desktop/a%20b.xlsx", candidates)
 
+    def test_extract_path_candidates_ignores_powershell_prompt_cwd(self):
+        output = "\n".join(
+            [
+                r"PS C:\work\project>",
+                r"PS C:\work\project> Write-Output 'C:\work\project\README.md'",
+                r"C:\work\project\README.md",
+                r"PS C:\work\project>",
+            ]
+        )
+        self.assertEqual(
+            lpa.extract_path_candidates(output),
+            [r"C:\work\project\README.md"],
+        )
+
     def test_extract_quoted_and_markdown_paths_with_spaces(self):
         output = "\n".join(
             [
@@ -294,6 +308,18 @@ class LocalPathActionsTests(unittest.TestCase):
                 report = lpa.diagnose_latest_path_from_pane(ctx)
             self.assertEqual(report["candidate_count"], 1)
             self.assertEqual(report["selected"]["local_path"], str(target))
+
+    def test_read_recent_pane_output_decodes_herdr_as_utf8(self):
+        context = lpa.PluginContext(focused_pane_id="w1:p1")
+        with mock.patch.object(
+            lpa.subprocess,
+            "run",
+            return_value=mock.Mock(returncode=0, stdout="C:\\work\\résumé.txt", stderr=""),
+        ) as run:
+            output = lpa.read_recent_pane_output(context)
+        self.assertEqual(output, "C:\\work\\résumé.txt")
+        self.assertEqual(run.call_args.kwargs["encoding"], "utf-8")
+        self.assertEqual(run.call_args.kwargs["errors"], "replace")
 
     def test_collect_picker_choices_returns_existing_paths_newest_first(self):
         with tempfile.TemporaryDirectory() as tmp:

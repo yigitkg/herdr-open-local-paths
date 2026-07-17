@@ -300,6 +300,8 @@ def pane_locality(context: PluginContext) -> str:
         result = subprocess.run(
             [herdr, "pane", "process-info", "--pane", pane_id],
             text=True,
+            encoding="utf-8",
+            errors="replace",
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             timeout=2,
@@ -368,6 +370,8 @@ def launch_path_picker(choices: list[PickerChoice], operation: str) -> None:
         result = subprocess.run(
             command,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             timeout=5,
@@ -467,7 +471,15 @@ def read_recent_pane_output(context: PluginContext) -> str:
         "--lines",
         str(lines),
     ]
-    result = subprocess.run(command, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=5)
+    result = subprocess.run(
+        command,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=5,
+    )
     if result.returncode != 0:
         stderr = result.stderr.strip() or "unknown error"
         raise LocalPathError(f"Could not read recent pane output: {stderr}")
@@ -530,6 +542,9 @@ def extract_path_candidate_records(text: str) -> list[PathCandidate]:
             candidate = clean_candidate_from_scan(match.group(0))
             if candidate and looks_like_path(candidate):
                 candidates.append((match.start(), match.end(), candidate))
+    candidates = [
+        item for item in candidates if not is_powershell_prompt_candidate(stripped, item[0], item[1])
+    ]
     candidates.sort(key=lambda item: item[0])
 
     # Regexes can overlap (for example a POSIX match inside a file URL). Keep
@@ -562,6 +577,11 @@ def extract_path_candidate_records(text: str) -> list[PathCandidate]:
             )
         )
     return records
+
+
+def is_powershell_prompt_candidate(text: str, start: int, end: int) -> bool:
+    line_start = text.rfind("\n", 0, start) + 1
+    return text[line_start:start] == "PS " and text[end : end + 1] == ">"
 
 
 def looks_like_path(candidate: str) -> bool:

@@ -75,6 +75,7 @@ class PathPickerTests(unittest.TestCase):
 
     def test_decode_key_supports_picker_controls(self):
         self.assertEqual(path_picker.decode_key("\n"), "enter")
+        self.assertEqual(path_picker.decode_key("\x1b"), "escape")
         self.assertEqual(path_picker.decode_key("j"), "j")
         self.assertEqual(path_picker.decode_key("k"), "k")
         self.assertEqual(path_picker.decode_key("q"), "q")
