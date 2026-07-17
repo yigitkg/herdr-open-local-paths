@@ -300,7 +300,7 @@ class LocalPathActionsTests(unittest.TestCase):
                 mock.patch.object(lpa, "is_wsl_environment", return_value=False),
             ):
                 resolved = lpa.resolve_latest_path_from_pane(ctx)
-            self.assertEqual(resolved.local_path, str(target))
+            self.assertTrue(os.path.samefile(resolved.local_path, target))
             self.assertEqual(resolved.line, 10)
 
     def test_diagnose_latest_path_reports_candidates(self):
