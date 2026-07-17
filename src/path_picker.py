@@ -8,7 +8,7 @@ import os
 import re
 import shutil
 import sys
-from pathlib import Path, PureWindowsPath
+from pathlib import Path
 
 from local_path_actions import (
     PICKER_SNAPSHOT_PREFIX,
@@ -146,13 +146,7 @@ def render(
         choice = choices[index]
         marker = "File" if choice.resolved.is_file else "Folder"
         pointer = ">" if index == selected else " "
-        if choice.resolved.is_dir:
-            row = f"{pointer} [{marker}] {choice.resolved.local_path}"
-        else:
-            name, parent = display_path_parts(choice)
-            prefix = f"{pointer} [{marker}] {name}"
-            parent_width = max(0, width - len(prefix) - 3)
-            row = prefix if parent_width == 0 else f"{prefix} - {clip_middle(parent, parent_width)}"
+        row = f"{pointer} [{marker}] {choice.resolved.local_path}"
         row = clip_line(row, width)
         if index == selected:
             row = f"\x1b[7m{row.ljust(width)}\x1b[0m"
@@ -171,15 +165,6 @@ def render(
 
     sys.stdout.write("\x1b[H\x1b[2J" + "\r\n".join(rendered[: size.lines]))
     sys.stdout.flush()
-
-
-def display_path_parts(choice: PickerChoice) -> tuple[str, str]:
-    path_text = choice.resolved.local_path
-    if choice.resolved.path_kind in {"windows-drive", "wsl-mount-windows", "wsl-unc", "unc"}:
-        path = PureWindowsPath(path_text)
-    else:
-        path = Path(path_text)
-    return path.name or str(path), str(path.parent)
 
 
 def operation_label(operation: str) -> str:

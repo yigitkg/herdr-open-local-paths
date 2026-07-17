@@ -11,9 +11,9 @@
   </g>
   <rect x="16" y="128" width="1068" height="30" fill="#d0d7de"/>
   <g font-family="monospace" font-size="18">
-    <text x="24" y="150" fill="#0d1117">&gt; [File] report.xlsx - /workspace/generated</text>
-    <text x="24" y="185" fill="#e6edf3">  [File] chart.png - /workspace/generated</text>
-    <text x="24" y="220" fill="#e6edf3">  [File] summary.pdf - /workspace/generated</text>
+    <text x="24" y="150" fill="#0d1117">&gt; [File] /workspace/generated/report.xlsx</text>
+    <text x="24" y="185" fill="#e6edf3">  [File] /workspace/generated/chart.png</text>
+    <text x="24" y="220" fill="#e6edf3">  [File] /workspace/generated/summary.pdf</text>
     <text x="24" y="272" fill="#e6edf3">Selected path: /workspace/generated/report.xlsx</text>
     <text x="24" y="302" fill="#8b949e">Found in recent output: Generated `/workspace/generated/report.xlsx`</text>
   </g>

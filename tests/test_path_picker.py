@@ -95,10 +95,6 @@ class PathPickerTests(unittest.TestCase):
     def test_clip_middle_preserves_both_ends(self):
         self.assertEqual(path_picker.clip_middle("C:/long/folder/name", 9), "C:/l…name")
 
-    def test_display_path_parts_puts_filename_first(self):
-        choice = self.choice("/tmp/reports/final.txt")
-        self.assertEqual(path_picker.display_path_parts(choice), ("final.txt", "/tmp/reports"))
-
     def test_operation_labels_are_plain_language(self):
         self.assertEqual(path_picker.operation_label("open"), "open the selected item")
         self.assertEqual(
@@ -121,6 +117,19 @@ class PathPickerTests(unittest.TestCase):
         ):
             path_picker.render([choice], 0, "open", "")
         self.assertIn("[Folder] /tmp/reports", stdout.getvalue())
+
+    def test_file_rows_show_the_complete_path(self):
+        choice = self.choice("/tmp/reports/final.txt")
+        with (
+            mock.patch.object(
+                path_picker.shutil,
+                "get_terminal_size",
+                return_value=os.terminal_size((120, 20)),
+            ),
+            mock.patch("sys.stdout", new_callable=io.StringIO) as stdout,
+        ):
+            path_picker.render([choice], 0, "open", "")
+        self.assertIn("[File] /tmp/reports/final.txt", stdout.getvalue())
 
 
 if __name__ == "__main__":
