@@ -1,0 +1,76 @@
+id = "yigitkg.local-path-actions"
+name = "Local Path Actions"
+version = "0.3.0"
+min_herdr_version = "0.7.4"
+description = "Open, reveal, copy, or choose local paths detected in Herdr terminal output."
+platforms = ["linux"]
+
+[[actions]]
+id = "diagnose"
+title = "Diagnose Local Path Context"
+description = "Print Herdr plugin context and path resolution details."
+contexts = ["pane", "selection"]
+command = ["python3", "src/local_path_actions.py", "diagnose"]
+
+[[actions]]
+id = "diagnose-latest-path"
+title = "Diagnose Latest Path"
+description = "Scan recent focused pane output and print detected path candidates."
+contexts = ["pane"]
+command = ["python3", "src/local_path_actions.py", "diagnose-latest"]
+
+[[actions]]
+id = "open-path"
+title = "Open Path"
+description = "Open the selected or clicked local path with the default app."
+contexts = ["pane", "selection"]
+command = ["python3", "src/local_path_actions.py", "open"]
+
+[[actions]]
+id = "open-latest-path"
+title = "Open Latest Path"
+description = "Open one detected path directly, or choose when several paths exist."
+contexts = ["pane"]
+command = ["python3", "src/local_path_actions.py", "open-latest"]
+
+[[actions]]
+id = "reveal-path"
+title = "Reveal Path"
+description = "Reveal the selected or clicked local path in the file manager."
+contexts = ["pane", "selection"]
+command = ["python3", "src/local_path_actions.py", "reveal"]
+
+[[actions]]
+id = "reveal-latest-path"
+title = "Reveal Latest Path"
+description = "Reveal one detected path directly, or choose when several paths exist."
+contexts = ["pane"]
+command = ["python3", "src/local_path_actions.py", "reveal-latest"]
+
+[[actions]]
+id = "copy-resolved-path"
+title = "Copy Resolved Path"
+description = "Copy the normalized path resolved from selected text or clicked file URL."
+contexts = ["pane", "selection"]
+command = ["python3", "src/local_path_actions.py", "copy"]
+
+[[actions]]
+id = "copy-latest-path"
+title = "Copy Latest Path"
+description = "Copy one detected path directly, or choose when several paths exist."
+contexts = ["pane"]
+command = ["python3", "src/local_path_actions.py", "copy-latest"]
+
+[[link_handlers]]
+id = "file-url"
+title = "Open file URL"
+pattern = "^file://.+$"
+action = "open-path"
+
+[[panes]]
+id = "path-picker"
+title = "Local Path Picker"
+placement = "popup"
+width = "75%"
+height = "55%"
+command = ["python3", "src/path_picker.py"]
