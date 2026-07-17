@@ -12,22 +12,36 @@ The plugin scans the focused pane's last 120 lines. One existing path is handled
 ## Requirements
 
 - Herdr 0.7.4 or newer
-- Linux or WSL2
-- Python 3.10 or newer available as `python3`
-- `xdg-open` on desktop Linux, or Windows interoperability and `explorer.exe` in WSL
+- Windows, Linux, or WSL2
+- Python 3.10 or newer available as `python` on Windows or `python3` on Linux/WSL
+- `xdg-open` on desktop Linux, or `explorer.exe` on Windows/WSL
 
-Native Windows and macOS are not declared supported in this release because the exact `python3` launcher and end-to-end workflow have not yet been verified there.
+macOS is not currently declared supported because its end-to-end workflow has not been verified.
 
 ## Install
 
+Linux and WSL:
+
 ```bash
 herdr plugin install yigitkg/herdr-open-local-paths
+```
+
+Native Windows (PowerShell):
+
+```powershell
+herdr plugin install yigitkg/herdr-open-local-paths/windows
 ```
 
 For development from this checkout:
 
 ```bash
 herdr plugin link /absolute/path/to/herdr-open-local-paths
+```
+
+On native Windows, link the Windows manifest:
+
+```powershell
+herdr plugin link "C:\path\to\herdr-open-local-paths\windows\herdr-plugin.toml"
 ```
 
 Add the shortcuts to your Herdr configuration:
@@ -91,7 +105,7 @@ No files appear:
 
 The action fails:
 
-- Confirm `python3 --version` reports 3.10 or newer.
+- Confirm `python --version` on Windows or `python3 --version` on Linux/WSL reports 3.10 or newer.
 - Confirm Herdr is 0.7.4 or newer.
 - In WSL, confirm `explorer.exe .` opens File Explorer.
 - A risky file must be revealed rather than opened.
@@ -111,6 +125,8 @@ The plugin has no third-party Python dependencies.
 python3 -m unittest discover -s tests -v
 python3 -m py_compile src/local_path_actions.py src/path_picker.py
 ```
+
+On Windows, use `python` in place of `python3`.
 
 See [SECURITY.md](SECURITY.md) for vulnerability reporting and [CHANGELOG.md](CHANGELOG.md) for release history.
 

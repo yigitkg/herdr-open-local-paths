@@ -4,9 +4,19 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-07-18
+
+### Added
+
+- Native Windows manifest and documented installation path.
+- Native Windows CI coverage with Python 3.12.
+
 ### Changed
 
 - File rows in the picker now show the complete path, matching folder rows.
+- Native Windows subprocess output is decoded consistently as UTF-8.
+- PowerShell prompt working directories are excluded from detected output paths.
+- The picker recognizes the native Windows Escape key sequence.
 
 ## [0.3.0] - 2026-07-18
 
@@ -31,5 +41,6 @@ All notable changes to this project are documented here.
 - Network path checks, subprocess calls, clipboard calls, and picker snapshots are bounded.
 - Decoded file URLs and terminal control sequences are validated before use.
 
-[Unreleased]: https://github.com/yigitkg/herdr-open-local-paths/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/yigitkg/herdr-open-local-paths/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/yigitkg/herdr-open-local-paths/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/yigitkg/herdr-open-local-paths/releases/tag/v0.3.0

@@ -29,6 +29,7 @@ class LocalPathActionsTests(unittest.TestCase):
         resolved = lpa.resolve_from_context(ctx)
         self.assertEqual(resolved.local_path, r"C:\Users\me\Desktop\a b.xlsx")
 
+    @unittest.skipIf(os.name == "nt", "POSIX-only path behavior")
     def test_file_url_posix(self):
         ctx = lpa.PluginContext(clicked_url="file:///tmp/a%20b.txt")
         with mock.patch.object(lpa, "is_wsl_environment", return_value=False):
@@ -51,16 +52,19 @@ class LocalPathActionsTests(unittest.TestCase):
         with self.assertRaises(lpa.LocalPathError):
             self.resolve("./report.csv")
 
+    @unittest.skipIf(os.name == "nt", "POSIX-only path behavior")
     def test_relative_path_resolves_against_focused_pane_cwd(self):
         resolved = self.resolve("./report.csv", "/tmp/project")
         self.assertEqual(resolved.local_path, "/tmp/project/report.csv")
 
+    @unittest.skipIf(os.name == "nt", "POSIX-only path behavior")
     def test_line_suffix_is_removed(self):
         resolved = self.resolve("/tmp/project/src/app.py:12:4")
         self.assertEqual(resolved.local_path, "/tmp/project/src/app.py")
         self.assertEqual(resolved.line, 12)
         self.assertEqual(resolved.column, 4)
 
+    @unittest.skipIf(os.name == "nt", "POSIX-only path behavior")
     def test_quoted_path_is_unwrapped(self):
         resolved = self.resolve('"/tmp/report.csv"')
         self.assertEqual(resolved.local_path, "/tmp/report.csv")
@@ -73,6 +77,7 @@ class LocalPathActionsTests(unittest.TestCase):
         resolved = self.resolve(r"C:\tmp\a & calc.exe.txt")
         self.assertEqual(resolved.local_path, r"C:\tmp\a & calc.exe.txt")
 
+    @unittest.skipIf(os.name == "nt", "POSIX-only path behavior")
     def test_percent_encoded_semicolon_is_literal(self):
         ctx = lpa.PluginContext(clicked_url="file:///tmp/a%3Btouch%20hacked.txt")
         with mock.patch.object(lpa, "is_wsl_environment", return_value=False):
@@ -96,6 +101,7 @@ class LocalPathActionsTests(unittest.TestCase):
             with self.assertRaises(lpa.LocalPathError):
                 lpa.ensure_open_allowed(resolved)
 
+    @unittest.skipIf(os.name == "nt", "POSIX-only executable behavior")
     def test_extensionless_posix_executable_is_blocked(self):
         with tempfile.TemporaryDirectory() as tmp:
             executable = Path(tmp) / "tool"
@@ -117,6 +123,7 @@ class LocalPathActionsTests(unittest.TestCase):
         self.assertEqual(exe, "os.startfile")
         self.assertEqual(args, [r"C:\Users\me\file.xlsx"])
 
+    @unittest.skipIf(os.name == "nt", "Linux-only reveal behavior")
     def test_reveal_command_linux_falls_back_to_parent(self):
         exe, args = lpa.reveal_command("/tmp/project/file.txt", "linux", False)
         self.assertEqual(exe, "xdg-open")
@@ -548,6 +555,7 @@ class LocalPathActionsTests(unittest.TestCase):
                 lpa.copy_text("/tmp/report.txt")
         self.assertEqual(stdout.getvalue().strip(), "/tmp/report.txt")
 
+    @unittest.skipIf(os.name == "nt", "WSL-only path behavior")
     def test_wsl_literal_windows_path_checks_mounted_equivalent(self):
         def inspect(path):
             if path == "/mnt/c/Users/me/report.txt":
